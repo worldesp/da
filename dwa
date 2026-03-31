@@ -1,0 +1,329 @@
+function Funcs:AddMultiSlider(Idx, Info)
+    assert(Info.Default, 'AddMultiSlider: Missing default value.');
+    assert(Info.Text, 'AddMultiSlider: Missing slider text.');
+    assert(Info.Min, 'AddMultiSlider: Missing minimum value.');
+    assert(Info.Max, 'AddMultiSlider: Missing maximum value.');
+    assert(Info.Rounding, 'AddMultiSlider: Missing rounding value.');
+
+    local MultiSlider = {
+        Value = Info.Default or { Info.Min, Info.Min };
+        Min = Info.Min;
+        Max = Info.Max;
+        Rounding = Info.Rounding;
+        MaxSize = 232;
+        Type = 'MultiSlider';
+        Callback = Info.Callback or function(Value) end;
+    };
+
+    local Groupbox = self;
+    local Container = Groupbox.Container;
+
+    if not Info.Compact then
+        Library:CreateLabel({
+            Size = UDim2.new(1, 0, 0, 10);
+            TextSize = 14;
+            Text = Info.Text;
+            TextXAlignment = Enum.TextXAlignment.Left;
+            TextYAlignment = Enum.TextYAlignment.Bottom;
+            ZIndex = 5;
+            Parent = Container;
+        });
+
+        Groupbox:AddBlank(3);
+    end
+
+    local SliderOuter = Library:Create('Frame', {
+        BackgroundColor3 = Color3.new(0, 0, 0);
+        BorderColor3 = Color3.new(0, 0, 0);
+        Size = UDim2.new(1, -4, 0, 13);
+        ZIndex = 5;
+        Parent = Container;
+    });
+
+    Library:AddToRegistry(SliderOuter, {
+        BorderColor3 = 'Black';
+    });
+
+    local SliderInner = Library:Create('Frame', {
+        BackgroundColor3 = Library.MainColor;
+        BorderColor3 = Library.OutlineColor;
+        BorderMode = Enum.BorderMode.Inset;
+        Size = UDim2.new(1, 0, 1, 0);
+        ZIndex = 6;
+        Parent = SliderOuter;
+    });
+
+    Library:AddToRegistry(SliderInner, {
+        BackgroundColor3 = 'MainColor';
+        BorderColor3 = 'OutlineColor';
+    });
+
+    -- Left slider (index 1)
+    local LeftSliderOuter = Library:Create('Frame', {
+        BackgroundColor3 = Color3.new(0, 0, 0);
+        BorderColor3 = Color3.new(0, 0, 0);
+        Size = UDim2.new(0.5, -2, 1, -2);
+        Position = UDim2.new(0, 1, 0, 1);
+        ZIndex = 7;
+        Parent = SliderInner;
+    });
+
+    local LeftSliderInner = Library:Create('Frame', {
+        BackgroundColor3 = Library.MainColor;
+        BorderColor3 = Library.OutlineColor;
+        BorderMode = Enum.BorderMode.Inset;
+        Size = UDim2.new(1, 0, 1, 0);
+        ZIndex = 8;
+        Parent = LeftSliderOuter;
+    });
+
+    Library:AddToRegistry(LeftSliderInner, {
+        BackgroundColor3 = 'MainColor';
+        BorderColor3 = 'OutlineColor';
+    });
+
+    local LeftFill = Library:Create('Frame', {
+        BackgroundColor3 = Library.AccentColor;
+        BorderColor3 = Library.AccentColorDark;
+        Size = UDim2.new(0, 0, 1, 0);
+        ZIndex = 9;
+        Parent = LeftSliderInner;
+    });
+
+    Library:AddToRegistry(LeftFill, {
+        BackgroundColor3 = 'AccentColor';
+        BorderColor3 = 'AccentColorDark';
+    });
+
+    local LeftHideBorder = Library:Create('Frame', {
+        BackgroundColor3 = Library.AccentColor;
+        BorderSizePixel = 0;
+        Position = UDim2.new(1, 0, 0, 0);
+        Size = UDim2.new(0, 1, 1, 0);
+        ZIndex = 10;
+        Parent = LeftFill;
+    });
+
+    Library:AddToRegistry(LeftHideBorder, {
+        BackgroundColor3 = 'AccentColor';
+    });
+
+    local LeftLabel = Library:CreateLabel({
+        Size = UDim2.new(1, 0, 1, 0);
+        TextSize = 14;
+        Text = '0';
+        ZIndex = 11;
+        Parent = LeftSliderInner;
+    });
+
+    -- Right slider (index 2)
+    local RightSliderOuter = Library:Create('Frame', {
+        BackgroundColor3 = Color3.new(0, 0, 0);
+        BorderColor3 = Color3.new(0, 0, 0);
+        Size = UDim2.new(0.5, -2, 1, -2);
+        Position = UDim2.new(0.5, 2, 0, 1);
+        ZIndex = 7;
+        Parent = SliderInner;
+    });
+
+    local RightSliderInner = Library:Create('Frame', {
+        BackgroundColor3 = Library.MainColor;
+        BorderColor3 = Library.OutlineColor;
+        BorderMode = Enum.BorderMode.Inset;
+        Size = UDim2.new(1, 0, 1, 0);
+        ZIndex = 8;
+        Parent = RightSliderOuter;
+    });
+
+    Library:AddToRegistry(RightSliderInner, {
+        BackgroundColor3 = 'MainColor';
+        BorderColor3 = 'OutlineColor';
+    });
+
+    local RightFill = Library:Create('Frame', {
+        BackgroundColor3 = Library.AccentColor;
+        BorderColor3 = Library.AccentColorDark;
+        Size = UDim2.new(0, 0, 1, 0);
+        ZIndex = 9;
+        Parent = RightSliderInner;
+    });
+
+    Library:AddToRegistry(RightFill, {
+        BackgroundColor3 = 'AccentColor';
+        BorderColor3 = 'AccentColorDark';
+    });
+
+    local RightHideBorder = Library:Create('Frame', {
+        BackgroundColor3 = Library.AccentColor;
+        BorderSizePixel = 0;
+        Position = UDim2.new(1, 0, 0, 0);
+        Size = UDim2.new(0, 1, 1, 0);
+        ZIndex = 10;
+        Parent = RightFill;
+    });
+
+    Library:AddToRegistry(RightHideBorder, {
+        BackgroundColor3 = 'AccentColor';
+    });
+
+    local RightLabel = Library:CreateLabel({
+        Size = UDim2.new(1, 0, 1, 0);
+        TextSize = 14;
+        Text = '0';
+        ZIndex = 11;
+        Parent = RightSliderInner;
+    });
+
+    Library:OnHighlight(SliderOuter, SliderOuter,
+        { BorderColor3 = 'AccentColor' },
+        { BorderColor3 = 'Black' }
+    );
+
+    if type(Info.Tooltip) == 'string' then
+        Library:AddToolTip(Info.Tooltip, SliderOuter)
+    end
+
+    function MultiSlider:UpdateColors()
+        LeftFill.BackgroundColor3 = Library.AccentColor;
+        LeftFill.BorderColor3 = Library.AccentColorDark;
+        RightFill.BackgroundColor3 = Library.AccentColor;
+        RightFill.BorderColor3 = Library.AccentColorDark;
+    end;
+
+    local function Round(Value)
+        if MultiSlider.Rounding == 0 then
+            return math.floor(Value);
+        end;
+        return tonumber(string.format('%.' .. MultiSlider.Rounding .. 'f', Value))
+    end;
+
+    function MultiSlider:Display()
+        local Suffix = Info.Suffix or '';
+        local MaxSize = LeftSliderInner.AbsoluteSize.X;
+
+        -- Update left slider
+        if Info.Compact then
+            LeftLabel.Text = (Info.Text or '') .. ' 1: ' .. MultiSlider.Value[1] .. Suffix
+        elseif Info.HideMax then
+            LeftLabel.Text = string.format('%s', MultiSlider.Value[1] .. Suffix)
+        else
+            LeftLabel.Text = string.format('%s/%s', MultiSlider.Value[1] .. Suffix, MultiSlider.Max .. Suffix);
+        end
+
+        local X1 = math.ceil(Library:MapValue(MultiSlider.Value[1], MultiSlider.Min, MultiSlider.Max, 0, MaxSize));
+        LeftFill.Size = UDim2.new(0, X1, 1, 0);
+        LeftHideBorder.Visible = not (X1 == MaxSize or X1 == 0);
+
+        -- Update right slider
+        if Info.Compact then
+            RightLabel.Text = (Info.Text or '') .. ' 2: ' .. MultiSlider.Value[2] .. Suffix
+        elseif Info.HideMax then
+            RightLabel.Text = string.format('%s', MultiSlider.Value[2] .. Suffix)
+        else
+            RightLabel.Text = string.format('%s/%s', MultiSlider.Value[2] .. Suffix, MultiSlider.Max .. Suffix);
+        end
+
+        local X2 = math.ceil(Library:MapValue(MultiSlider.Value[2], MultiSlider.Min, MultiSlider.Max, 0, MaxSize));
+        RightFill.Size = UDim2.new(0, X2, 1, 0);
+        RightHideBorder.Visible = not (X2 == MaxSize or X2 == 0);
+    end;
+
+    function MultiSlider:OnChanged(Func)
+        MultiSlider.Changed = Func;
+        Func(MultiSlider.Value);
+    end;
+
+    function MultiSlider:GetValueFromXOffset(X, MaxSize)
+        return Round(Library:MapValue(X, 0, MaxSize, MultiSlider.Min, MultiSlider.Max));
+    end;
+
+    function MultiSlider:SetValue(Tbl)
+        if type(Tbl) ~= 'table' then return end;
+        
+        local Val1 = tonumber(Tbl[1]);
+        local Val2 = tonumber(Tbl[2]);
+
+        if Val1 then
+            Val1 = math.clamp(Val1, MultiSlider.Min, MultiSlider.Max);
+            MultiSlider.Value[1] = Val1;
+        end
+
+        if Val2 then
+            Val2 = math.clamp(Val2, MultiSlider.Min, MultiSlider.Max);
+            MultiSlider.Value[2] = Val2;
+        end
+
+        MultiSlider:Display();
+
+        Library:SafeCallback(MultiSlider.Callback, MultiSlider.Value);
+        Library:SafeCallback(MultiSlider.Changed, MultiSlider.Value);
+    end;
+
+    -- Left slider input
+    LeftSliderInner.InputBegan:Connect(function(Input)
+        if Input.UserInputType == Enum.UserInputType.MouseButton1 and not Library:MouseIsOverOpenedFrame() then
+            local mPos = Mouse.X;
+            local gPos = LeftFill.Size.X.Offset;
+            local Diff = mPos - (LeftFill.AbsolutePosition.X + gPos);
+            local MaxSize = LeftSliderInner.AbsoluteSize.X;
+
+            while InputService:IsMouseButtonPressed(Enum.UserInputType.MouseButton1) do
+                local nMPos = Mouse.X;
+                local nX = math.clamp(gPos + (nMPos - mPos) + Diff, 0, MaxSize);
+
+                local nValue = MultiSlider:GetValueFromXOffset(nX, MaxSize);
+                local OldValue = MultiSlider.Value[1];
+                MultiSlider.Value[1] = nValue;
+
+                MultiSlider:Display();
+
+                if nValue ~= OldValue then
+                    Library:SafeCallback(MultiSlider.Callback, MultiSlider.Value);
+                    Library:SafeCallback(MultiSlider.Changed, MultiSlider.Value);
+                end;
+
+                RenderStepped:Wait();
+            end;
+
+            Library:AttemptSave();
+        end;
+    end);
+
+    -- Right slider input
+    RightSliderInner.InputBegan:Connect(function(Input)
+        if Input.UserInputType == Enum.UserInputType.MouseButton1 and not Library:MouseIsOverOpenedFrame() then
+            local mPos = Mouse.X;
+            local gPos = RightFill.Size.X.Offset;
+            local Diff = mPos - (RightFill.AbsolutePosition.X + gPos);
+            local MaxSize = RightSliderInner.AbsoluteSize.X;
+
+            while InputService:IsMouseButtonPressed(Enum.UserInputType.MouseButton1) do
+                local nMPos = Mouse.X;
+                local nX = math.clamp(gPos + (nMPos - mPos) + Diff, 0, MaxSize);
+
+                local nValue = MultiSlider:GetValueFromXOffset(nX, MaxSize);
+                local OldValue = MultiSlider.Value[2];
+                MultiSlider.Value[2] = nValue;
+
+                MultiSlider:Display();
+
+                if nValue ~= OldValue then
+                    Library:SafeCallback(MultiSlider.Callback, MultiSlider.Value);
+                    Library:SafeCallback(MultiSlider.Changed, MultiSlider.Value);
+                end;
+
+                RenderStepped:Wait();
+            end;
+
+            Library:AttemptSave();
+        end;
+    end);
+
+    MultiSlider:Display();
+    Groupbox:AddBlank(Info.BlankSize or 6);
+    Groupbox:Resize();
+
+    Options[Idx] = MultiSlider;
+
+    return MultiSlider;
+end;
